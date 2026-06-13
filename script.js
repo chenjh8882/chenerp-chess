@@ -28,13 +28,16 @@ function restartGame(){
 }
 
 function getBoardParams(){
+
   const w = boardWrap.clientWidth;
 
+  const scale = w / 900;
+
   return {
-    left: w * 0.092,      // 第一列交叉点
-    top:  w * 0.092,      // 第一行交叉点
-    step: w * 0.102,      // 每格间距
-    piece: w * 0.076      // 棋子大小
+    left: 50 * scale,
+    top: 50 * scale,
+    step: 100 * scale,
+    piece: 70 * scale
   };
 }
 
