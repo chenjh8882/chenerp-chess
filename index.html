@@ -142,6 +142,85 @@ function isCannonValid(fromR,fromC,toR,toC){
     }
 }
 
+function isAdvisorValid(piece,fromR,fromC,toR,toC){
+
+    if(
+        Math.abs(toR-fromR)!==1 ||
+        Math.abs(toC-fromC)!==1
+    ){
+        return false;
+    }
+
+    if(toC<3 || toC>5){
+        return false;
+    }
+
+    if(piece.color==="red"){
+        if(toR<7 || toR>9){
+            return false;
+        }
+    }else{
+        if(toR<0 || toR>2){
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function isKingValid(piece,fromR,fromC,toR,toC){
+
+    const dr=Math.abs(toR-fromR);
+    const dc=Math.abs(toC-fromC);
+
+    if(dr+dc!==1){
+        return false;
+    }
+
+    if(toC<3 || toC>5){
+        return false;
+    }
+
+    if(piece.color==="red"){
+        if(toR<7 || toR>9){
+            return false;
+        }
+    }else{
+        if(toR<0 || toR>2){
+            return false;
+        }
+    }
+
+    return true;
+}
+    
+function isElephantValid(piece,fromR,fromC,toR,toC){
+
+    const dr=toR-fromR;
+    const dc=toC-fromC;
+
+    if(Math.abs(dr)!==2 || Math.abs(dc)!==2){
+        return false;
+    }
+
+    const eyeR=fromR+dr/2;
+    const eyeC=fromC+dc/2;
+
+    if(board[eyeR][eyeC]){
+        return false;
+    }
+
+    if(piece.color==="red" && toR<5){
+        return false;
+    }
+
+    if(piece.color==="black" && toR>4){
+        return false;
+    }
+
+    return true;
+}
+    
 function isMoveValid(p,fromR,fromC,toR,toC){
     if(p.text==="兵" || p.text==="卒"){
         return isSoldierValid(p,fromR,fromC,toR,toC);
@@ -152,10 +231,32 @@ function isMoveValid(p,fromR,fromC,toR,toC){
     if(p.text==="馬"){
         return isHorseValid(fromR,fromC,toR,toC);
     }
+    
+    if(
+    p.text==="仕" ||
+    p.text==="士"
+)
+    {
+    return isAdvisorValid(p,fromR,fromC,toR,toC);
+}
+
+if(
+    p.text==="帥" ||
+    p.text==="帅" ||
+    p.text==="將" ||
+    p.text==="将"
+){
+    return isKingValid(p,fromR,fromC,toR,toC);
+}
+    
     if(p.text==="炮"){
         return isCannonValid(fromR,fromC,toR,toC);
     }
 
+if(p.text==="相" || p.text==="象"){
+    return isElephantValid(p,fromR,fromC,toR,toC);
+}
+   
     return true;
 }
 
@@ -194,8 +295,29 @@ function clickCell(r,c){
         return;
     }
 
-    board[r][c]=moving;
-    board[from.r][from.c]=null;
+    if(target){
+
+    if(
+       target.text==="將" ||
+       target.text==="将" ||
+       target.text==="帥" ||
+       target.text==="帅"
+    ){
+
+        alert(
+          (moving.color==="red"?
+          "红方胜利":
+          "黑方胜利")
+        );
+
+        resetGame();
+        return;
+    }
+}
+
+board[r][c]=moving;
+board[from.r][from.c]=null;
+    
 
     selected=null;
     currentPlayer=currentPlayer==="red"?"black":"red";
