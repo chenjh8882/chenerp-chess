@@ -12,7 +12,7 @@ h1{ color:#b30000; }
     position:relative;
     width:620px;
     margin:auto;
-    background:#d9a85c;
+    background:transparent;
     padding:18px;
     border:8px solid #7b4a20;
 }
@@ -67,39 +67,26 @@ h1{ color:#b30000; }
     border-color:#d00000;
 }
 
+#palaceSvg{
+    position:absolute;
+    left:18px;
+    top:18px;
+    width:558px;
+    height:620px;
+    pointer-events:none;
+    z-index:1;
+}
+
+#palaceSvg line{
+    stroke:#5c3517;
+    stroke-width:2;
+}
+    
 .blackPiece{
     color:#111;
     border-color:#111;
 }
 
-.palace{
-    position:absolute;
-    width:176px;
-    height:2px;
-    background:#5c3517;
-    transform-origin:left center;
-    z-index:1;
-}
-
-top.p1{
-    left:250px;
-    top:150px;
-}
-
-.top.p2{
-    left:372px;
-    top:150px;
-}
-
-.bottom.p1{
-    left:250px;
-    top:490px;
-}
-
-.bottom.p2{
-    left:372px;
-    top:490px;
-}
 .selected .piece{
     background:#fff176;
     box-shadow:0 0 12px #ff0000;
@@ -120,10 +107,13 @@ button{
     
 <div id="boardWrap">
     
-<div class="palace top p1"></div>
-<div class="palace top p2"></div>
-<div class="palace bottom p1"></div>
-<div class="palace bottom p2"></div>
+<svg id="palaceSvg" viewBox="0 0 558 620">
+  <line x1="217" y1="31" x2="341" y2="155"/>
+  <line x1="341" y1="31" x2="217" y2="155"/>
+
+  <line x1="217" y1="465" x2="341" y2="589"/>
+  <line x1="341" y1="465" x2="217" y2="589"/>
+</svg>
     
     <div id="riverText">楚河　　　　汉界</div>
     <table id="board"></table>
