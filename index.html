@@ -260,6 +260,54 @@ if(p.text==="相" || p.text==="象"){
     return true;
 }
 
+function findKing(color){
+    for(let r=0;r<10;r++){
+        for(let c=0;c<9;c++){
+            const p=board[r][c];
+            if(p && p.color===color &&
+              (p.text==="帥" || p.text==="帅" || p.text==="將" || p.text==="将")){
+                return {r:r,c:c};
+            }
+        }
+    }
+    return null;
+}
+
+function kingsFaceEachOther(){
+    const redK=findKing("red");
+    const blackK=findKing("black");
+    if(!redK || !blackK) return false;
+    if(redK.c!==blackK.c) return false;
+
+    let count=0;
+    for(let r=Math.min(redK.r,blackK.r)+1;r<Math.max(redK.r,blackK.r);r++){
+        if(board[r][redK.c]) count++;
+    }
+    return count===0;
+}
+
+function isKingInCheck(color){
+    const king=findKing(color);
+    if(!king) return false;
+
+    const enemy=color==="red"?"black":"red";
+
+    // 将帅照面也算被将
+    if(kingsFaceEachOther()) return true;
+
+    for(let r=0;r<10;r++){
+        for(let c=0;c<9;c++){
+            const p=board[r][c];
+            if(p && p.color===enemy){
+                if(isMoveValid(p,r,c,king.r,king.c)){
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+    
 function clickCell(r,c){
     const p=board[r][c];
 
@@ -295,36 +343,49 @@ function clickCell(r,c){
         return;
     }
 
-    if(target){
+    board[r][c]=moving;
+    board[from.r][from.c]=null;
 
-    if(
-       target.text==="將" ||
-       target.text==="将" ||
-       target.text==="帥" ||
-       target.text==="帅"
-    ){
+    if(kingsFaceEachOther()){
+        board[from.r][from.c]=moving;
+        board[r][c]=target;
+        selected=null;
+        alert("将帅不能直接照面！");
+        drawBoard();
+        return;
+    }
 
-        alert(
-          (moving.color==="red"?
-          "红方胜利":
-          "黑方胜利")
-        );
+    if(isKingInCheck(currentPlayer)){
+        board[from.r][from.c]=moving;
+        board[r][c]=target;
+        selected=null;
+        alert("不能这样走，自己的将/帅会被将军！");
+        drawBoard();
+        return;
+    }
 
+    if(target && (
+        target.text==="將" ||
+        target.text==="将" ||
+        target.text==="帥" ||
+        target.text==="帅"
+    )){
+        alert(moving.color==="red" ? "红方胜利" : "黑方胜利");
         resetGame();
         return;
     }
-}
-
-board[r][c]=moving;
-board[from.r][from.c]=null;
-    
 
     selected=null;
     currentPlayer=currentPlayer==="red"?"black":"red";
+
     drawBoard();
     updateInfo();
-}
 
+    if(isKingInCheck(currentPlayer)){
+        alert("将军！");
+    }
+}
+    
 resetGame();
 </script>
 </body>
