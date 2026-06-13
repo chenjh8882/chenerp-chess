@@ -3,40 +3,41 @@
 <head>
 <meta charset="UTF-8">
 <title>ChenERP 中国象棋</title>
-
 <style>
 body{
     text-align:center;
-    font-family:Microsoft YaHei;
+    font-family:"Microsoft YaHei", Arial;
     background:#f5f5f5;
 }
-
-h1{
-    color:#b30000;
+h1{ color:#b30000; }
+#info{
+    font-size:20px;
+    margin:10px;
+    font-weight:bold;
 }
-
 #board{
     margin:auto;
     border-collapse:collapse;
 }
-
 #board td{
     width:60px;
     height:60px;
     border:1px solid #333;
     background:#f4d9a3;
-    font-size:28px;
+    font-size:30px;
     font-weight:bold;
     text-align:center;
     cursor:pointer;
 }
-
-.red{
-    color:red;
+.red{ color:red; }
+.black{ color:black; }
+.selected{
+    background:#80ff80 !important;
 }
-
-.black{
-    color:black;
+button{
+    margin:15px;
+    padding:8px 20px;
+    font-size:16px;
 }
 </style>
 </head>
@@ -44,50 +45,125 @@ h1{
 <body>
 
 <h1>ChenERP 中国象棋</h1>
+<div id="info">红方走棋</div>
+<button onclick="resetGame()">重新开始</button>
 
 <table id="board"></table>
 
 <script>
+let board;
+let selected = null;
+let currentPlayer = "red";
 
-const board=[
-['車','馬','象','士','將','士','象','馬','車'],
-['','','','','','','','',''],
-['','炮','','','','','','炮',''],
-['卒','','卒','','卒','','卒','','卒'],
-['','','','','','','','',''],
-['','','','','','','','',''],
-['兵','','兵','','兵','','兵','','兵'],
-['','炮','','','','','','炮',''],
-['','','','','','','','',''],
-['車','馬','相','仕','帥','仕','相','馬','車']
+const initBoard = [
+ ['車','馬','象','士','將','士','象','馬','車'],
+ ['','','','','','','','',''],
+ ['','炮','','','','','','炮',''],
+ ['卒','','卒','','卒','','卒','','卒'],
+ ['','','','','','','','',''],
+ ['','','','','','','','',''],
+ ['兵','','兵','','兵','','兵','','兵'],
+ ['','炮','','','','','','炮',''],
+ ['','','','','','','','',''],
+ ['車','馬','相','仕','帥','仕','相','馬','車']
 ];
 
-const table=document.getElementById("board");
-
-for(let r=0;r<10;r++){
-
-let tr=document.createElement("tr");
-
-for(let c=0;c<9;c++){
-
-let td=document.createElement("td");
-
-td.innerHTML=board[r][c];
-
-if(r<5){
-td.className="black";
-}else{
-td.className="red";
+function getColor(row, piece){
+    if(piece === "") return "";
+    return row < 5 ? "black" : "red";
 }
 
-tr.appendChild(td);
-
+function resetGame(){
+    board = initBoard.map(row => row.slice());
+    selected = null;
+    currentPlayer = "red";
+    drawBoard();
+    updateInfo();
 }
 
-table.appendChild(tr);
-
+function updateInfo(){
+    document.getElementById("info").innerText =
+        currentPlayer === "red" ? "红方走棋" : "黑方走棋";
 }
 
+function drawBoard(){
+    const table = document.getElementById("board");
+    table.innerHTML = "";
+
+    for(let r=0; r<10; r++){
+        const tr = document.createElement("tr");
+
+        for(let c=0; c<9; c++){
+            const td = document.createElement("td");
+            const piece = board[r][c];
+
+            td.innerText = piece;
+
+            const color = getColor(r, piece);
+            if(color) td.className = color;
+
+            if(selected && selected.r === r && selected.c === c){
+                td.classList.add("selected");
+            }
+
+            td.onclick = function(){
+                clickCell(r,c);
+            };
+
+            tr.appendChild(td);
+        }
+
+        table.appendChild(tr);
+    }
+}
+
+function clickCell(r,c){
+    const piece = board[r][c];
+
+    if(selected === null){
+        if(piece === "") return;
+
+        const color = getColor(r,piece);
+        if(color !== currentPlayer){
+            alert("现在轮到" + (currentPlayer==="red" ? "红方" : "黑方") + "走棋");
+            return;
+        }
+
+        selected = {r:r, c:c};
+        drawBoard();
+        return;
+    }
+
+    const from = selected;
+    const movingPiece = board[from.r][from.c];
+    const targetPiece = board[r][c];
+
+    if(from.r === r && from.c === c){
+        selected = null;
+        drawBoard();
+        return;
+    }
+
+    if(targetPiece !== ""){
+        const targetColor = getColor(r,targetPiece);
+        if(targetColor === currentPlayer){
+            selected = {r:r, c:c};
+            drawBoard();
+            return;
+        }
+    }
+
+    board[r][c] = movingPiece;
+    board[from.r][from.c] = "";
+
+    selected = null;
+    currentPlayer = currentPlayer === "red" ? "black" : "red";
+
+    drawBoard();
+    updateInfo();
+}
+
+resetGame();
 </script>
 
 </body>
