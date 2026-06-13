@@ -32,9 +32,6 @@ h1{ color:#b30000; }
     position:relative;
 }
 
-.riverTop{ border-bottom:none!important; }
-.riverBottom{ border-top:none!important; }
-
 #riverText{
     position:absolute;
     top:303px;
@@ -75,6 +72,36 @@ h1{ color:#b30000; }
     border-color:#111;
 }
 
+.palace{
+    position:absolute;
+    width:176px;
+    height:2px;
+    background:#5c3517;
+    transform-origin:left center;
+    z-index:1;
+}
+
+.top.p1{
+    left:236px;
+    top:80px;
+    transform:rotate(45deg);
+}
+.top.p2{
+    left:360px;
+    top:80px;
+    transform:rotate(135deg);
+}
+
+.bottom.p1{
+    left:236px;
+    top:700px;
+    transform:rotate(45deg);
+}
+.bottom.p2{
+    left:360px;
+    top:700px;
+    transform:rotate(135deg);
+}
 .selected .piece{
     background:#fff176;
     box-shadow:0 0 12px #ff0000;
@@ -94,6 +121,12 @@ button{
 <button onclick="resetGame()">重新开始</button>
     
 <div id="boardWrap">
+    
+<div class="palace top p1"></div>
+<div class="palace top p2"></div>
+<div class="palace bottom p1"></div>
+<div class="palace bottom p2"></div>
+    
     <div id="riverText">楚河　　　　汉界</div>
     <table id="board"></table>
 </div>
@@ -140,10 +173,7 @@ function drawBoard(){
         for(let c=0;c<9;c++){
             const td=document.createElement("td");
 
-            if(r===4) td.classList.add("riverTop");
-            if(r===5) td.classList.add("riverBottom");
-
-            const p=board[r][c];
+             const p=board[r][c];
 
             if(p){
                 const span=document.createElement("span");
