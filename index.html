@@ -145,13 +145,53 @@ function isSoldierMoveValid(piece, fromR, fromC, toR, toC){
 }
 
 function isMoveValid(piece, fromR, fromC, toR, toC){
+
+    // ===== 兵卒规则 =====
     if(piece === "兵" || piece === "卒"){
         return isSoldierMoveValid(piece, fromR, fromC, toR, toC);
     }
 
-    // 其他棋子暂时允许自由移动
+    // ===== 车规则 =====
+    if(piece === "車"){
+
+        // 必须横走或竖走
+        if(fromR !== toR && fromC !== toC){
+            return false;
+        }
+
+        // 统计中间棋子数量
+        let count = 0;
+
+        if(fromR === toR){
+
+            let start = Math.min(fromC,toC)+1;
+            let end   = Math.max(fromC,toC);
+
+            for(let c=start;c<end;c++){
+                if(board[fromR][c] !== ""){
+                    count++;
+                }
+            }
+
+        }else{
+
+            let start = Math.min(fromR,toR)+1;
+            let end   = Math.max(fromR,toR);
+
+            for(let r=start;r<end;r++){
+                if(board[r][fromC] !== ""){
+                    count++;
+                }
+            }
+
+        }
+
+        return count === 0;
+    }
+
+    // 其他棋子暂时自由移动
     return true;
-}
+    
 
 function clickCell(r,c){
     const piece = board[r][c];
