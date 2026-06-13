@@ -1,53 +1,94 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <title>ChenERP 中国象棋</title>
+
 <style>
 body{
-    font-family:Arial,Microsoft YaHei;
-    background:#f5f5f5;
     text-align:center;
-    margin-top:50px;
+    font-family:Microsoft YaHei;
+    background:#f5f5f5;
 }
+
 h1{
-    color:#c00000;
+    color:#b30000;
 }
-.box{
-    background:white;
-    width:600px;
+
+#board{
     margin:auto;
-    padding:30px;
-    border-radius:10px;
-    box-shadow:0 0 10px #ccc;
+    border-collapse:collapse;
 }
-button{
-    padding:10px 20px;
-    font-size:18px;
+
+#board td{
+    width:60px;
+    height:60px;
+    border:1px solid #333;
+    background:#f4d9a3;
+    font-size:28px;
+    font-weight:bold;
+    text-align:center;
+    cursor:pointer;
+}
+
+.red{
+    color:red;
+}
+
+.black{
+    color:black;
 }
 </style>
 </head>
 
 <body>
 
-<div class="box">
 <h1>ChenERP 中国象棋</h1>
 
-<h2>第一版上线成功</h2>
+<table id="board"></table>
 
-<p>
-GitHub Pages 已成功发布。
-</p >
+<script>
 
-<p>
-下一步将增加中国象棋棋盘与走子功能。
-</p >
+const board=[
+['車','馬','象','士','將','士','象','馬','車'],
+['','','','','','','','',''],
+['','炮','','','','','','炮',''],
+['卒','','卒','','卒','','卒','','卒'],
+['','','','','','','','',''],
+['','','','','','','','',''],
+['兵','','兵','','兵','','兵','','兵'],
+['','炮','','','','','','炮',''],
+['','','','','','','','',''],
+['車','馬','相','仕','帥','仕','相','馬','車']
+];
 
-<button onclick="alert('恭喜，网站运行成功！')">
-点击测试
-</button>
+const table=document.getElementById("board");
 
-</div>
+for(let r=0;r<10;r++){
+
+let tr=document.createElement("tr");
+
+for(let c=0;c<9;c++){
+
+let td=document.createElement("td");
+
+td.innerHTML=board[r][c];
+
+if(r<5){
+td.className="black";
+}else{
+td.className="red";
+}
+
+tr.appendChild(td);
+
+}
+
+table.appendChild(tr);
+
+}
+
+</script>
 
 </body>
 </html>
