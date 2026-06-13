@@ -150,7 +150,45 @@ function isMoveValid(piece, fromR, fromC, toR, toC){
     if(piece === "兵" || piece === "卒"){
         return isSoldierMoveValid(piece, fromR, fromC, toR, toC);
     }
+    
+// ===== 马规则 =====
+if(piece === "馬"){
 
+    let dr = toR - fromR;
+    let dc = toC - fromC;
+
+    let adr = Math.abs(dr);
+    let adc = Math.abs(dc);
+
+    // 必须走日
+    if(!((adr===2 && adc===1) || (adr===1 && adc===2))){
+        return false;
+    }
+
+    // 蹩马腿判断
+
+    if(adr===2){
+
+        let legR = fromR + dr/2;
+        let legC = fromC;
+
+        if(board[legR][legC] !== ""){
+            return false;
+        }
+    }
+
+    if(adc===2){
+
+        let legR = fromR;
+        let legC = fromC + dc/2;
+
+        if(board[legR][legC] !== ""){
+            return false;
+        }
+    }
+
+    return true;
+}
     // ===== 车规则 =====
     if(piece === "車"){
 
