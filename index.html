@@ -189,6 +189,46 @@ if(piece === "馬"){
 
     return true;
 }
+    
+    // ===== 炮规则 =====
+if(piece === "炮"){
+
+    // 必须横走或竖走
+    if(fromR !== toR && fromC !== toC){
+        return false;
+    }
+
+    let count = 0;
+
+    if(fromR === toR){
+        let start = Math.min(fromC,toC)+1;
+        let end   = Math.max(fromC,toC);
+
+        for(let c=start;c<end;c++){
+            if(board[fromR][c] !== ""){
+                count++;
+            }
+        }
+    }else{
+        let start = Math.min(fromR,toR)+1;
+        let end   = Math.max(fromR,toR);
+
+        for(let r=start;r<end;r++){
+            if(board[r][fromC] !== ""){
+                count++;
+            }
+        }
+    }
+
+    // 目标位置有棋子：吃子，必须隔一个
+    if(board[toR][toC] !== ""){
+        return count === 1;
+    }
+
+    // 目标位置为空：移动，不能隔子
+    return count === 0;
+}
+    
     // ===== 车规则 =====
     if(piece === "車"){
 
