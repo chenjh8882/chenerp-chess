@@ -45,6 +45,22 @@ function render(){
   pieceLayer.innerHTML = "";
   const p = getBoardParams();
 
+  // 先生成 10×9 个透明点击点
+  for(let r=0;r<10;r++){
+    for(let c=0;c<9;c++){
+      const cell = document.createElement("div");
+      cell.style.position = "absolute";
+      cell.style.left = (p.left + c * p.step - p.piece / 2) + "px";
+      cell.style.top = (p.top + r * p.step - p.piece / 2) + "px";
+      cell.style.width = p.piece + "px";
+      cell.style.height = p.piece + "px";
+      cell.style.cursor = "pointer";
+      cell.onclick = () => clickCell(r,c);
+      pieceLayer.appendChild(cell);
+    }
+  }
+
+  // 再生成棋子，盖在透明点击点上
   for(let r=0;r<10;r++){
     for(let c=0;c<9;c++){
       const code = board[r][c];
@@ -52,6 +68,7 @@ function render(){
 
       const div = document.createElement("div");
       div.className = "piece " + (code[0]==="r" ? "red" : "black");
+
       if(selected && selected.r===r && selected.c===c){
         div.classList.add("selected");
       }
