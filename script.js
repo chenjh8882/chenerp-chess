@@ -278,6 +278,9 @@ function isInCheck(color){
   const king = findKing(color);
   if(!king) return false;
 
+  // 将帅照面也算被将军
+  if(kingsFace()) return true;
+
   const enemyPrefix = color === "red" ? "b" : "r";
 
   for(let r=0;r<10;r++){
@@ -293,7 +296,6 @@ function isInCheck(color){
 
   return false;
 }
-
 
 window.addEventListener("resize", render);
 restartGame();
