@@ -118,11 +118,36 @@ function clickCell(r,c){
     return;
   }
 
-  board[r][c] = moving;
-  board[from.r][from.c] = null;
+ const captured = board[r][c];
+
+board[r][c] = moving;
+board[from.r][from.c] = null;
+
+if(captured && (captured.includes("將") || captured.includes("帥"))){
+  alert((currentPlayer === "red" ? "红方" : "黑方") + "胜利！");
+  restartGame();
+  return;
+}
+
+if(kingsFace()){
+  board[from.r][from.c] = moving;
+  board[r][c] = captured;
+  alert("将帅不能照面");
   selected = null;
-  currentPlayer = currentPlayer === "red" ? "black" : "red";
   render();
+  return;
+}
+
+const nextPlayer = currentPlayer === "red" ? "black" : "red";
+
+if(isInCheck(nextPlayer)){
+  alert((nextPlayer === "red" ? "红方" : "黑方") + "被将军！");
+}
+
+selected = null;
+currentPlayer = nextPlayer;
+render();
+  
 }
 
 function isLegalMove(fr,fc,tr,tc){
@@ -218,6 +243,57 @@ function countBetween(fr,fc,tr,tc){
 
   return 99;
 }
+
+function findKing(color){
+  const target = color === "red" ? "r帥" : "b將";
+  for(let r=0;r<10;r++){
+    for(let c=0;c<9;c++){
+      if(board[r][c] === target){
+        return {r,c};
+      }
+    }
+  }
+  return null;
+}
+
+function kingsFace(){
+  const redKing = findKing("red");
+  const blackKing = findKing("black");
+
+  if(!redKing || !blackKing) return false;
+  if(redKing.c !== blackKing.c) return false;
+
+  const c = redKing.c;
+  const minR = Math.min(redKing.r, blackKing.r);
+  const maxR = Math.max(redKing.r, blackKing.r);
+
+  for(let r=minR+1;r<maxR;r++){
+    if(board[r][c]) return false;
+  }
+
+  return true;
+}
+
+function isInCheck(color){
+  const king = findKing(color);
+  if(!king) return false;
+
+  const enemyPrefix = color === "red" ? "b" : "r";
+
+  for(let r=0;r<10;r++){
+    for(let c=0;c<9;c++){
+      const p = board[r][c];
+      if(!p || p[0] !== enemyPrefix) continue;
+
+      if(isLegalMove(r,c,king.r,king.c)){
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 
 window.addEventListener("resize", render);
 restartGame();
